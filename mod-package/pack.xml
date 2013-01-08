@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<assembly>
+  <id>pack</id>
+
+  <formats>
+      <format>zip</format>
+  </formats>
+
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <baseDirectory>/</baseDirectory>
+
+  <files>
+      <!-- files -->
+      <file>
+          <source>VSAddin/bin/VSSonarPlugin.dll</source>
+          <outputDirectory></outputDirectory>
+      </file>
+	  <file>
+          <source>VSAddin/bin/VSSonarAddin.xml</source>
+          <outputDirectory></outputDirectory>
+      </file>
+	  <file>
+          <source>VSAddin/VSSonarPlugin.AddIn</source>
+          <outputDirectory></outputDirectory>
+      </file>
+	  <file>
+          <source>VSAddin/vssonar.xml</source>
+          <outputDirectory></outputDirectory>
+      </file>
+	  <file>
+          <source>cmdline-vssonar/target/cmdline-vssonar-0.2-SNAPSHOT-jar-with-dependencies.jar</source>
+          <outputDirectory></outputDirectory>
+		  <destName>vssonar-cli.jar</destName>
+      </file>
+  </files>
+</assembly>

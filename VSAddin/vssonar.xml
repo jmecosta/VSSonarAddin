@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <cpplint>
+        <executable>E:\prod\structures\src\work\MSBuild\Sonar\apps\Python27\python.exe</executable>
+        <args>E:\prod\structures\src\work\MSBuild\Sonar\scripts\cpplint_mod.py --output=vs7</args>
+    </cpplint>   
+    <cppcheck>
+        <executable>E:\prod\structures\src\work\MSBuild\Sonar\apps\cppcheck\cppcheck.exe</executable>
+		<args>--suppress=unusedFunction --inline-suppr --enable=all --xml -D__cplusplus -DUNITTEST_VERSION -DDEVELOPER_VERSION -DNT</args>		
+    </cppcheck>	
+    <vera>
+        <executable>E:\prod\structures\src\work\MSBuild\Sonar\apps\vera++\vera++.exe</executable>
+		<args>-nodup -showrules</args>		
+    </vera>		
+    <rats>
+        <executable>E:\prod\structures\src\work\MSBuild\Sonar\apps\rats-2.3\rats.exe</executable>
+		<args></args>		
+    </rats>	
+</project>

@@ -1,0 +1,61 @@
+<?xml version="1.0"?><rats_output>
+<stats>
+<dbcount lang="perl">33</dbcount>
+<dbcount lang="ruby">46</dbcount>
+<dbcount lang="python">62</dbcount>
+<dbcount lang="c">334</dbcount>
+<dbcount lang="php">55</dbcount>
+</stats>
+<analyzed>./libsystem/sys_project_name.cpp</analyzed>
+<vulnerability>
+  <severity>High</severity>
+  <type>getenv</type>
+  <message>
+    Environment variables are highly untrustable input. They may be of any length, and contain any data. Do not make any assumptions regarding content or length. If at all possible avoid using them, and if it is necessary, sanitize them and truncate them to a reasonable length.
+  </message>
+  <file>
+    <name>./libsystem/sys_project_name.cpp</name>
+    <line>38</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>High</severity>
+  <type>fixed size global buffer</type>
+  <message>
+    Extra care should be taken to ensure that character arrays that are
+    allocated on the stack are used safely.  They are prime targets for
+    buffer overflow attacks.
+  </message>
+  <file>
+    <name>./libsystem/sys_project_name.cpp</name>
+    <line>48</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>High</severity>
+  <message>
+    Check to be sure that argument 2 passed to this function call will not
+    copy more data than can be handled, resulting in a buffer overflow.
+  </message>
+  <file>
+    <name>./libsystem/sys_project_name.cpp</name>
+    <line>53</line>
+  </file>
+</vulnerability>
+<vulnerability>
+  <severity>High</severity>
+  <message>
+    Check to be sure that argument 2 passed to this function call will not
+    copy more data than can be handled, resulting in a buffer overflow.
+  </message>
+  <file>
+    <name>./libsystem/sys_project_name.cpp</name>
+    <line>60</line>
+  </file>
+</vulnerability>
+<timing>
+<total_lines>581</total_lines>
+<total_time>0.000000</total_time>
+<lines_per_second>-2147483648</lines_per_second>
+</timing>
+</rats_output>

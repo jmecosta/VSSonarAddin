@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <cpplint>
+        <executable>E:\Python27\python.exe</executable>
+        <args>E:\cpplint_mod.py --output=vs7</args>
+    </cpplint>   
+    <cppcheck>
+        <executable>C:\cppcheck\cppcheck.exe</executable>
+		<args>--suppress=unusedFunction --inline-suppr --enable=all --xml -D__cplusplus -DUNITTEST_VERSION -DDEVELOPER_VERSION -DNT</args>		
+    </cppcheck>	
+    <vera>
+        <executable>C:\vera++\vera++.exe</executable>
+		<args>-arg2 -arg1</args>		
+    </vera>		
+    <rats>
+        <executable>C:\rats-2.3\rats.exe</executable>
+        <args></args>
+    </rats>	
+</project>

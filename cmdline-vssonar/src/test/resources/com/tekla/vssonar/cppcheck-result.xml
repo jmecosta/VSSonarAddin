@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+<error file="/com/tekla/vssonar/code_chunks.cpp" line="4" id="missingInclude" severity="style" msg="Include file: &quot;cancel_proto.h&quot; not found."/>
+<error file="/com/tekla/vssonar/code_chunks.cpp" line="5" id="missingInclude" severity="style" msg="Include file: &quot;log_output_handler.hpp&quot; not found."/>
+<error file="/com/tekla/vssonar/code_chunks.cpp" line="6" id="missingInclude" severity="style" msg="Include file: &quot;main_assert_trap.hpp&quot; not found."/>
+<error file="/com/tekla/vssonar/code_chunks.cpp" line="7" id="missingInclude" severity="style" msg="Include file: &quot;main_guid_creator.h&quot; not found."/>
+</results>

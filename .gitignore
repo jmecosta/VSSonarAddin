@@ -1,0 +1,14 @@
+*.testsettings
+*.suo
+*.vsmdi
+VSAddin/VSSonarPlugin/bin
+VSAddin/VSSonarPlugin/obj
+VSAddin/VSSonarPlugin/target
+VSAddin/bin
+VSAddin/target
+cmdline-vssonar/target
+target
+VSAddin/TestResults
+VSAddin/VSSonarPlugin.Test/bin
+VSAddin/VSSonarPlugin.Test/obj
+VSAddin/VSSonarPlugin/VSSonarAddin.xml
