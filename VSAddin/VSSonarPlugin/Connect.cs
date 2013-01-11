@@ -203,22 +203,23 @@ namespace VSSonarPlugin
                 codeCommandBar = commandBars[VS_CODE_WINDOW_COMMANDBAR_NAME];
                 ModifyRegistry createRegistry = new ModifyRegistry(PLUGINKEY);
 
+                temporaryToolbar = commandBars.Add(MY_TEMPORARY_TOOLBAR_CAPTION, MsoBarPosition.msoBarTop, System.Type.Missing, true);
+
                 try
                 {
-                    temporaryToolbar = commandBars.Add(MY_TEMPORARY_TOOLBAR_CAPTION, MsoBarPosition.msoBarTop, System.Type.Missing, true);
-                    temporaryToolbar.RowIndex = (int)createRegistry.Read(ROWINDEXKEY);
+                    int row_index = (int)createRegistry.Read(ROWINDEXKEY);
+                    temporaryToolbar.RowIndex = row_index;
                 }
                 catch (System.Exception)
                 {
-                    temporaryToolbar = commandBars.Add(MY_TEMPORARY_TOOLBAR_CAPTION,
-                        MsoBarPosition.msoBarTop, System.Type.Missing, true);
                 }
 
                 FormatBarAndButtons(codeCommandBar);
 
                 try
                 {
-                    temporaryToolbar.Visible = Convert.ToBoolean(createRegistry.Read(VISIBLEKEY));
+                    bool visible = Convert.ToBoolean(createRegistry.Read(VISIBLEKEY));
+                    temporaryToolbar.Visible = visible;
                 }
                 catch (System.Exception)
                 {
@@ -226,9 +227,9 @@ namespace VSSonarPlugin
                 }
 
             }
-            catch (System.Exception e)
+            catch(System.Exception e)
             {
-                System.Windows.Forms.MessageBox.Show(e.ToString());
+                System.Windows.Forms.MessageBox.Show("Cannot Add ToolBar: " + e.StackTrace);
             }
         }
 

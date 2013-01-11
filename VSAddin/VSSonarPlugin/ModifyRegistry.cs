@@ -35,7 +35,7 @@ namespace Utility.ModifyRegistry
         }
 
         private string childKey = "SOFTWARE\\TEST";
-        private RegistryKey baseRegistryKey = Registry.LocalMachine;
+        private RegistryKey baseRegistryKey = Registry.CurrentUser;
 
         /// <summary>
         /// A property to set the BaseRegistryKey value.
