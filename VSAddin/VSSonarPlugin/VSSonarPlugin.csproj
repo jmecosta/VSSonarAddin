@@ -203,13 +203,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\reset.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="vssonar.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="VSSonarPlugin.AddIn" />
-  </ItemGroup>
-  <ItemGroup>
-    <WebReferences Include="Web References\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

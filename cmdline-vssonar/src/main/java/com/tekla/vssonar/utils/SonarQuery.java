@@ -94,7 +94,7 @@ public class SonarQuery implements ISonarQuery {
     }    
 
     @Override
-    public String queryProfile(String language, String projectKey) { 
+    public String queryProfile(String projectKey) { 
         ResourceQuery query = ResourceQuery.createForMetrics(projectKey, "profile");
         Resource struts = sonar.find(query);
         Measure profile = struts.getMeasure("profile");
@@ -162,5 +162,15 @@ public class SonarQuery implements ISonarQuery {
             sourcelines.add(line);
         }
         return sourcelines;
-    }        
+    }
+
+    public boolean queryResource(String resource) {
+        boolean isPresent = true;
+        
+        if(sonar.find(ResourceQuery.create(resource)) == null){
+            isPresent = false;
+        }
+        
+        return isPresent;
+    }
 }

@@ -14,6 +14,7 @@ import com.tekla.vssonar.utils.Utils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.sonar.wsclient.services.ResourceQuery;
 import org.sonar.wsclient.services.Violation;
 
 /**
@@ -41,14 +42,23 @@ public class SonarAnalysis {
         this.localfilename = config.getLocalFilePath();
 
         try{        
-            profile = sonarQuery.queryProfile(config.getprojectLanguage(), config.getProjectKey());
+            profile = sonarQuery.queryProfile(config.getProjectKey());
         } catch(org.sonar.wsclient.connectors.ConnectionException e) {
             throw new org.sonar.wsclient.connectors.ConnectionException("Authentication Failed" );           
+        } catch(java.lang.NullPointerException e) {
+            throw new org.sonar.wsclient.connectors.ConnectionException("Project Key is Incorrect" );           
         }
     }
 
     private void analyseSourceCode() throws IOException {
 
+        if(sonarQuery.queryResource(resource)) {
+            Utils.printToConsole("Resource was not found, please validate your configuration");
+            Utils.printToConsole("ProjectKey: " + config.getProjectKey());
+            Utils.printToConsole("Resource: " + resource);
+            return;
+        }
+        
         // read local source        
         localsource.addAll(Utils.readLines(config.getSolution() + "/" + config.getFile()));
 
@@ -63,6 +73,7 @@ public class SonarAnalysis {
 
     private Integer reportViolations(List<Violation> violations, boolean checkenabled, boolean checkseverity, boolean islocal) {
         Integer reportedViolations = 0;
+
         for (Violation entry : violations) {
             Integer line = 0;
             if (entry.getLine() != null) {
@@ -170,8 +181,16 @@ public class SonarAnalysis {
         return tot;
     }
 
-    public Integer reportViolationsInSonar() {    
-        Integer violations = reportViolations(sonarQuery.queryViolations(resource), false, false, false);
+    public Integer reportViolationsInSonar() {
+        
+        if(!sonarQuery.queryResource(resource)) {
+            Utils.printToConsole("Resource was not found, please validate your configuration");
+            Utils.printToConsole("ProjectKey: " + config.getProjectKey());
+            Utils.printToConsole("Resource: " + resource);
+            return 0;
+        }
+        
+        Integer violations = reportViolations(sonarQuery.queryViolations(resource), false, false, false);        
         Utils.printToConsole("Violations in Sonar: " + violations);
         return violations;
     }
@@ -184,6 +203,15 @@ public class SonarAnalysis {
     }
 
     public Integer reportCoverage() {
+        
+        if(sonarQuery.queryResource(resource)) {
+            Utils.printToConsole("Resource was not found, please validate your configuration");
+            Utils.printToConsole("ProjectKey: " + config.getProjectKey());
+            Utils.printToConsole("Resource: " + resource);
+            return 0;
+        }
+
+                
         Integer lines = 0;
         List<String> uncoveredlines = new ArrayList<String>();
         List<String> uncoveredlinesconditions = new ArrayList<String>();

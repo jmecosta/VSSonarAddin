@@ -87,7 +87,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
             }
 
             [TestMethod]
-            public void TestNoProjectLey()
+            public void TestNoProjectKey()
             {
                 String args = "-cp \"e:\\dummy\\Documents\\Visual Studio 2010\\Addins\\vssonar-cli.jar\" com.tekla.vssonar.VssonarCli -solution_path e:\\dummy -username _ -password _ -cmd auth_sonar";
                 List<string> lines = new List<string>();
@@ -97,6 +97,19 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
                 lines.Add("<project key not defined>");
                 executor.setReturnValue(lines);
                 Assert.AreEqual(sonarCommands.AuthenticateUserAndValidateConfig("_", "_"), SonarInterface.CONFIG_ERROR_NO_PROJECT_KEY);
+            }
+
+            [TestMethod]
+            public void TestInvalidProjectKey()
+            {
+                String args = "-cp \"e:\\dummy\\Documents\\Visual Studio 2010\\Addins\\vssonar-cli.jar\" com.tekla.vssonar.VssonarCli -solution_path e:\\dummy -username _ -password _ -cmd auth_sonar";
+                List<string> lines = new List<string>();
+                MockExecutor executor = new MockExecutor();
+                SonarInterface sonarCommands = new SonarInterface(executor, "e:\\dummy", "e:\\dummy");
+                executor.setExpectations("java", args);
+                lines.Add("Project Key is Incorrect");
+                executor.setReturnValue(lines);
+                Assert.AreEqual(sonarCommands.AuthenticateUserAndValidateConfig("_", "_"), SonarInterface.CONFIG_ERROR_INVALID_PROJECT_KEY);
             }
         }
     }

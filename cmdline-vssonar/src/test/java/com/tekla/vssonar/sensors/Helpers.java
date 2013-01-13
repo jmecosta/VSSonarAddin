@@ -4,6 +4,7 @@
  */
 package com.tekla.vssonar.sensors;
 
+import com.tekla.vssonar.utils.Utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -28,5 +29,17 @@ public static List<String> readFileData(File file) throws IOException {
         }
 
         return stringBuilder;
-    }    
+    }
+
+    public static String[] CreateCliArgs() {
+        File pom = Utils.loadResource("/pom.xml");
+        String solpath = pom.getParent().toString();
+        String[] args = {"-solution_path", solpath,
+            "-cmd", "report_sonar",
+            "-username", "test",
+            "-password", "test",
+            "-sonarurl", "http://sonar:80",
+                "-file_path", solpath + "\\src.cs"};
+        return args;
+    }
 }

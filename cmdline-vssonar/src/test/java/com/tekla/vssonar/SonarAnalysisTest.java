@@ -5,10 +5,9 @@
 package com.tekla.vssonar;
 
 import com.tekla.vssonar.configuration.PluginConfiguration;
+import com.tekla.vssonar.sensors.Helpers;
 import com.tekla.vssonar.sensors.SensorsManager;
-import com.tekla.vssonar.utils.CmdExecutor;
-import com.tekla.vssonar.utils.ISonarQuery;
-import com.tekla.vssonar.utils.Utils;
+import com.tekla.vssonar.utils.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import org.sonar.wsclient.Sonar;
 import org.sonar.wsclient.services.Violation;
 
 /**
@@ -28,11 +28,11 @@ public class SonarAnalysisTest {
 
     @Test
     public void testFailAutheticate() throws ParseException, IOException {
-        String[] args = CreateCliArgs();;
+        String[] args = Helpers.CreateCliArgs();;
 
         PluginConfiguration config = new PluginConfiguration(args);
         ISonarQuery query = mock(ISonarQuery.class);
-        when(query.queryProfile("cs", config.getProjectKey())).thenThrow(new org.sonar.wsclient.connectors.ConnectionException());
+        when(query.queryProfile(config.getProjectKey())).thenThrow(new org.sonar.wsclient.connectors.ConnectionException("Authentication Failed"));
         try {
             SonarAnalysis analyse = new SonarAnalysis(query, config);
             Assert.fail("Should throw exception");
@@ -40,15 +40,28 @@ public class SonarAnalysisTest {
             Assert.assertEquals("Authentication Failed", e.getMessage());
         }
     }
-    
-    @Test
-    public void testReportSonar() throws ParseException, IOException {
-        String[] args = CreateCliArgs();
+
+    public void testFailProjectKey() throws ParseException, IOException {
+        String[] args = Helpers.CreateCliArgs();;
 
         PluginConfiguration config = new PluginConfiguration(args);
-        CmdExecutor executor = mock(CmdExecutor.class);
         ISonarQuery query = mock(ISonarQuery.class);
-        when(query.queryProfile("cs", config.getProjectKey())).thenReturn("Default");
+        when(query.queryProfile(config.getProjectKey())).thenThrow(new org.sonar.wsclient.connectors.ConnectionException("Project Key is Incorrect"));
+        try {
+            SonarAnalysis analyse = new SonarAnalysis(query, config);
+            Assert.fail("Should throw exception");
+        } catch (org.sonar.wsclient.connectors.ConnectionException e) {
+            Assert.assertEquals("Project Key is Incorrect", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testReportSonar() throws ParseException, IOException {
+        String[] args = Helpers.CreateCliArgs();
+
+        PluginConfiguration config = new PluginConfiguration(args);
+        ISonarQuery query = mock(ISonarQuery.class);
+        when(query.queryProfile(config.getProjectKey())).thenReturn("Default");
         List<Violation> violations = new ArrayList<Violation>();
         Violation viol = new Violation();
         viol.setLine(100);
@@ -56,21 +69,35 @@ public class SonarAnalysisTest {
         viol.setResourceKey("test");
         viol.setMessage("message");
         violations.add(viol);
+        when(query.queryResource(config.getResource())).thenReturn(true);
         when(query.queryViolations(config.getResource())).thenReturn(violations);
         SonarAnalysis analyse = new SonarAnalysis(query, config);        
         Integer violationcount = analyse.reportViolationsInSonar();
         Assert.assertEquals(new Integer(1), violationcount);
     }
-    
-    @Test
-    public void testReportSonarNoDataInViolation() throws ParseException, IOException {
-        String[] args = CreateCliArgs();
+
+    public void testReportSonarResourceNotFound() throws ParseException, IOException {
+        String[] args = Helpers.CreateCliArgs();
 
         PluginConfiguration config = new PluginConfiguration(args);
         ISonarQuery query = mock(ISonarQuery.class);
-        when(query.queryProfile("cs", config.getProjectKey())).thenReturn("Default");
+        when(query.queryProfile(config.getProjectKey())).thenReturn("Default");
+        when(query.queryResource(config.getResource())).thenReturn(false);
+        SonarAnalysis analyse = new SonarAnalysis(query, config);        
+        Integer violationcount = analyse.reportViolationsInSonar();
+        Assert.assertEquals(new Integer(0), violationcount);
+    }
+    
+    @Test
+    public void testReportSonarNoDataInViolation() throws ParseException, IOException {
+        String[] args = Helpers.CreateCliArgs();
+
+        PluginConfiguration config = new PluginConfiguration(args);
+        ISonarQuery query = mock(ISonarQuery.class);
+        when(query.queryProfile(config.getProjectKey())).thenReturn("Default");
         List<Violation> violations = new ArrayList<Violation>();
         violations.add(new Violation());
+        when(query.queryResource(config.getResource())).thenReturn(true);
         when(query.queryViolations(config.getResource())).thenReturn(violations);
         SonarAnalysis analyse = new SonarAnalysis(query, config);        
         Integer violationcount = analyse.reportViolationsInSonar();
@@ -79,11 +106,11 @@ public class SonarAnalysisTest {
 
     @Test
     public void testReportLocalViolations() throws ParseException, IOException {
-        String[] args = CreateCliArgs();
+        String[] args = Helpers.CreateCliArgs();
 
         PluginConfiguration config = new PluginConfiguration(args);
         ISonarQuery query = mock(ISonarQuery.class);
-        when(query.queryProfile("cs", config.getProjectKey())).thenReturn("Default");
+        when(query.queryProfile(config.getProjectKey())).thenReturn("Default");
         List<Violation> violations = new ArrayList<Violation>();
         Violation viol = new Violation();
         viol.setLine(100);
@@ -100,7 +127,7 @@ public class SonarAnalysisTest {
     
     @Test
     public void testReportAddedLocalViolations() throws ParseException, IOException {
-        String[] args = CreateCliArgs();
+        String[] args = Helpers.CreateCliArgs();
 
         PluginConfiguration config = new PluginConfiguration(args);
         ISonarQuery query = mock(ISonarQuery.class);
@@ -111,7 +138,7 @@ public class SonarAnalysisTest {
         lines.add("public class cc {}");
 
         when(query.querySource(config.getResource())).thenReturn(lines);
-        when(query.queryProfile("cs", config.getProjectKey())).thenReturn("Default");
+        when(query.queryProfile(config.getProjectKey())).thenReturn("Default");
         when(query.queryIsRuleEnable("cs", "key", "Default")).thenReturn(true);
         List<Violation> violations = new ArrayList<Violation>();
         Violation viol = new Violation();
@@ -130,7 +157,7 @@ public class SonarAnalysisTest {
     
     @Test
     public void testReportCoverage() throws ParseException, IOException {
-        String[] args = CreateCliArgs();
+        String[] args = Helpers.CreateCliArgs();
 
         PluginConfiguration config = new PluginConfiguration(args);
         ISonarQuery query = mock(ISonarQuery.class);
@@ -139,7 +166,7 @@ public class SonarAnalysisTest {
         List<String> lines2 = new ArrayList<String>();
         lines2.add("100=2");        
 
-        when(query.queryProfile("cs", config.getProjectKey())).thenReturn("Default");
+        when(query.queryProfile(config.getProjectKey())).thenReturn("Default");
         when(query.queryNotCoveredLineHitsCoverage(config.getResource())).thenReturn(lines); 
         when(query.queryNotCoveredConditionsHitsCoverage(config.getResource())).thenReturn(lines2);        
         
@@ -150,7 +177,7 @@ public class SonarAnalysisTest {
     
     @Test
     public void testReportChangeLinesLocalViolations() throws ParseException, IOException {
-        String[] args = CreateCliArgs();
+        String[] args = Helpers.CreateCliArgs();
 
         PluginConfiguration config = new PluginConfiguration(args);
         ISonarQuery query = mock(ISonarQuery.class);
@@ -161,7 +188,7 @@ public class SonarAnalysisTest {
         lines.add("public class cc {}");
 
         when(query.querySource(config.getResource())).thenReturn(lines);
-        when(query.queryProfile("cs", config.getProjectKey())).thenReturn("Default");
+        when(query.queryProfile(config.getProjectKey())).thenReturn("Default");
         when(query.queryIsRuleEnable("cs", "key", "Default")).thenReturn(true);
         List<Violation> violations = new ArrayList<Violation>();
         Violation viol = new Violation();
@@ -174,18 +201,26 @@ public class SonarAnalysisTest {
         SonarAnalysis analyse = new SonarAnalysis(query, config);
         Integer violationcount = analyse.reportChangedLines();
         Assert.assertEquals(new Integer(4), violationcount);
-    }
-
+    }  
     
-    private String[] CreateCliArgs() {
-        File pom = Utils.loadResource("/pom.xml");
-        String solpath = pom.getParent().toString();
-        String[] args = {"-solution_path", solpath,
+    //@Test
+    public void testSonarRealConnection() throws ParseException, IOException {
+        String[] args = {"-solution_path", "E:\\z_misctools\\SonarSupportTools\\VSSonarPlugin\\VSAddin",
             "-cmd", "report_sonar",
-            "-username", "test",
-            "-password", "test",
+            "-username", "admin",
+            "-password", "admin",
+            
             "-sonarurl", "http://sonar:80",
-                "-file_path", solpath + "\\src.cs"};
-        return args;
-    }
+                "-file_path", "E:\\z_misctools\\SonarSupportTools\\VSSonarPlugin\\VSAddin\\VSSonarPlugin\\Connect.cs"};
+    
+
+            PluginConfiguration config = new PluginConfiguration(args);
+            Sonar sonar = Sonar.create(config.getSonarUrl(), config.getUserName(), config.getPassword());
+            ISonarQuery query = new SonarQuery(sonar);
+        
+        SonarAnalysis analyse = new SonarAnalysis(query, config);        
+        Integer violationcount = analyse.reportViolationsInSonar();
+        Assert.assertEquals(new Integer(75), violationcount);
+    }    
+    
 }

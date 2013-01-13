@@ -72,6 +72,10 @@ namespace VSSonarPlugin
         /// CONFIG NOK NO LANGUAGE
         /// </summary>
         public const int CONFIG_ERROR_NO_LANGUAGE_KEY = 4;
+        /// <summary>
+        /// CONFIG NOK INVALID PROJECT KEY
+        /// </summary>
+        public const int CONFIG_ERROR_INVALID_PROJECT_KEY = 5;
 
         /// <summary>
         /// Constructor Executor
@@ -114,6 +118,11 @@ namespace VSSonarPlugin
                 if(line.Contains("Authentication Failed"))
                 {
                     ret = AUTH_FAIL;
+                    break;
+                }
+                if (line.Contains("Project Key is Incorrect"))
+                {
+                    ret = CONFIG_ERROR_INVALID_PROJECT_KEY;
                     break;
                 }
                 if (line.Contains("<sonar url not defined>"))

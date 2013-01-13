@@ -313,6 +313,7 @@ namespace VSSonarPlugin
             if (!ValidateConfiguration(sonarCommands))
             {
                 this.SetStatusMessage("No Valid Configuration / Or User Cancel");
+                System.Windows.Forms.MessageBox.Show("Cannot Validate Configuration / Or User Cancel - Check ProjectKey");
                 return;
             }
 
@@ -486,6 +487,7 @@ namespace VSSonarPlugin
                                 VSSonarUtils.WriteDataToConfigurationFile(VSSONAR_HOST_KEY, inFormHost.Answer, this.SolutionPath() + "\\" + VSSONARPROJECTFILE);
                             }
                             break;
+                        case SonarInterface.CONFIG_ERROR_INVALID_PROJECT_KEY:
                         case SonarInterface.CONFIG_ERROR_NO_PROJECT_KEY:
                             InputForm inFormProjectKey = new InputForm("Insert Project Key [ex: Tekla:VSSonarPlugin]");
                             inFormProjectKey.ShowDialog();

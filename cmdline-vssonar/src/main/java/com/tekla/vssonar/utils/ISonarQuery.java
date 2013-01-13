@@ -21,7 +21,7 @@ public interface ISonarQuery {
 
     List<String> queryNotCoveredLineHitsCoverage(String resource);
 
-    String queryProfile(String language, String projectKey);
+    String queryProfile(String projectKey);
 
     String queryRuleSeverity(String language, String key, String profile);
 
@@ -29,4 +29,5 @@ public interface ISonarQuery {
 
     List<Violation> queryViolations(String resource);
     
+    boolean queryResource(String resource);
 }
